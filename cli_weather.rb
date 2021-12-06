@@ -45,4 +45,3 @@ puts ""
 puts "Description: #{json['weather'].first['description']}"
 puts "Wind Speed: #{json['wind']['speed']} mph"
 puts "Cloudiness: #{json['clouds']['all']}%"
-end
