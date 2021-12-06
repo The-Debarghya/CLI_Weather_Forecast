@@ -1,4 +1,4 @@
-# CLI_Weather_Forecast
+# CLI_Weather_Report
 A command-line tool that fetches present weather report of the given city.
 
 ## Usage:
