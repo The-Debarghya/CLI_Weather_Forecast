@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby 
+#!/usr/bin/env ruby
 require 'open-uri'
 require 'json'
 
@@ -20,8 +20,8 @@ ARGV.each do |argv|
 end
 search = search.join
 
-baseurl =  "http://api.openweathermap.org/data/2.5/weather?q="
-appid = "&APPID=aade92db2619aca3f567b1ac542128b5"
+baseurl =  "http://api.openweathermap.org/data/2.5/forecast?q="
+appid = "&APPID={apikey}"
 fullurl = "#{baseurl}#{search}#{appid}"
 
 data = URI.open(fullurl).read
@@ -30,20 +30,23 @@ json = JSON.parse(data)
 if json['cod'] == 400
 	abort("City not found. Please try again.")
 end
+puts "\n******Weather Forecast of #{search} for next 16 hours:******\n\n"
+for i in 0..16 do
+	tempc = KelvinToCelcius(json["list"][i]["main"]["temp"])
+	highc = KelvinToCelcius(json["list"][i]["main"]["temp_max"])
+	lowc = KelvinToCelcius(json["list"][i]["main"]["temp_min"])
 
-tempc = KelvinToCelcius(json["main"]["temp"])
-highc = KelvinToCelcius(json["main"]["temp_min"])
-lowc = KelvinToCelcius(json["main"]["temp_max"])
+	tempf = KelvinToFahrenheit(json["list"][i]["main"]["temp"])
+	highf = KelvinToFahrenheit(json["list"][i]["main"]["temp_min"])
+	lowf = KelvinToFahrenheit(json["list"][i]["main"]["temp_max"])
 
-tempf = KelvinToFahrenheit(json["main"]["temp"])
-highf = KelvinToFahrenheit(json["main"]["temp_min"])
-lowf = KelvinToFahrenheit(json["main"]["temp_max"])
-
-puts "\n******Weather Forecast for #{search}:******\n\n"
-puts "Temperature (F°) #{tempf}° (highest: #{highf}/lowest: #{lowf})"
-puts "Temperature (C°) #{tempc}° (highest: #{highc}/lowest: #{lowc})"
-puts ""
-puts "Description: #{json['weather'].first['description']}"
-puts "Wind Speed: #{json['wind']['speed']} mph"
-puts "Cloudiness: #{json['clouds']['all']}%"
+	puts "Temperature (F°) #{tempf}° (highest: #{highf}/lowest: #{lowf})"
+	puts "Temperature (C°) #{tempc}° (highest: #{highc}/lowest: #{lowc})"
+	puts ""
+	puts "Description: #{json["list"][i]['weather'][0]["description"]}"
+	puts "Wind Speed: #{json["list"][i]['wind']['speed']} mph"
+	puts "Cloudiness: #{json["list"][i]['clouds']['all']}%"
+	puts "****************************************************************"
 end
+end
+
